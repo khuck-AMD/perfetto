@@ -17975,7 +17975,9 @@ filegroup {
         "src/trace_redaction/collect_frame_cookies.cc",
         "src/trace_redaction/collect_system_info.cc",
         "src/trace_redaction/collect_timeline_events.cc",
+        "src/trace_redaction/collect_trace_time_range.cc",
         "src/trace_redaction/drop_empty_ftrace_events.cc",
+        "src/trace_redaction/filter_by_time_range.cc",
         "src/trace_redaction/filtering.cc",
         "src/trace_redaction/find_package_uid.cc",
         "src/trace_redaction/merge_threads.cc",
@@ -17993,6 +17995,7 @@ filegroup {
         "src/trace_redaction/scrub_process_stats.cc",
         "src/trace_redaction/trace_redaction_framework.cc",
         "src/trace_redaction/trace_redactor.cc",
+        "src/trace_redaction/trace_time_extractor.cc",
         "src/trace_redaction/verify_integrity.cc",
     ],
 }

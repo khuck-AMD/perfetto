@@ -27,16 +27,56 @@
 #include "src/trace_redaction/trace_redaction_framework.h"
 #include "src/trace_redaction/trace_redactor.h"
 
+#include "protos/perfetto/trace/clock_snapshot.pbzero.h"
+
 namespace perfetto::trace_redaction {
 
+namespace {
+
+// Check if a clock ID is a sequence-scoped clock (64-128 range).
+// These require special handling and can cause crashes if not properly
+// translated with a sequence ID.
+bool IsSequenceScopedClock(uint32_t clock_id) {
+  return clock_id >= 64 && clock_id < 128;
+}
+
+// Check if a clock snapshot contains any sequence-scoped clocks that would
+// cause crashes in the clock synchronizer.
+bool HasProblematicClocks(
+    const protos::pbzero::TracePacket::Decoder& packet) {
+  if (!packet.has_clock_snapshot()) {
+    return false;
+  }
+  protos::pbzero::ClockSnapshot::Decoder snapshot(packet.clock_snapshot());
+  for (auto clock_it = snapshot.clocks(); clock_it; ++clock_it) {
+    protos::pbzero::ClockSnapshot_Clock::Decoder clock(clock_it->as_bytes());
+    if (clock.has_clock_id() && IsSequenceScopedClock(clock.clock_id())) {
+      return true;
+    }
+  }
+  return false;
+}
+
+}  // namespace
+
 // A tolerant version of CollectClocks that logs errors but continues.
-// This is needed for merged traces where clock snapshots may not be monotonic.
+// This is needed for merged traces where clock snapshots may not be monotonic
+// or contain sequence-scoped clocks that can't be properly handled.
 class TolerantCollectClocks : public CollectClocks {
  public:
   ~TolerantCollectClocks() override;
 
   base::Status Collect(const protos::pbzero::TracePacket::Decoder& packet,
                        Context* context) const override {
+    // Skip clock snapshots with sequence-scoped clocks (ID 64-128) as these
+    // require sequence ID context that we don't have, and will crash the
+    // clock synchronizer.
+    if (HasProblematicClocks(packet)) {
+      PERFETTO_LOG(
+          "Skipping clock snapshot with sequence-scoped clocks");
+      return base::OkStatus();
+    }
+
     auto status = CollectClocks::Collect(packet, context);
     if (!status.ok()) {
       // Log the error but continue - we'll use raw timestamps as fallback
