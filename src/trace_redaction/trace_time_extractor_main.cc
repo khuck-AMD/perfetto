@@ -119,8 +119,7 @@ int main(int argc, char** argv) {
         PERFETTO_ELOG("--duration-ms requires a value");
         return 1;
       }
-      config.duration_ns =
-          ParseInt64OrDie(argv[i], "--duration-ms") * kNsPerMs;
+      config.duration_ns = ParseInt64OrDie(argv[i], "--duration-ms") * kNsPerMs;
     } else if (strcmp(argv[i], "--duration-s") == 0) {
       if (++i >= argc) {
         PERFETTO_ELOG("--duration-s requires a value");

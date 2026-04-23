@@ -55,7 +55,8 @@ void StripWriteIntoFile(std::string* packet) {
 
       for (auto config_field = config_decoder.ReadField(); config_field.valid();
            config_field = config_decoder.ReadField()) {
-        // Skip write_into_file (field 8) - it's not relevant for extracted traces
+        // Skip write_into_file (field 8) - it's not relevant for extracted
+        // traces
         if (config_field.id() == TraceConfig::kWriteIntoFileFieldNumber) {
           continue;
         }
@@ -90,8 +91,7 @@ bool FilterByTimeRange::IsMetadataPacket(
          packet.has_trace_packet_defaults() || packet.has_interned_data() ||
          packet.has_track_descriptor() || packet.has_service_event() ||
          packet.has_synchronization_marker() || packet.has_trace_uuid() ||
-         packet.incremental_state_cleared() ||
-         packet.previous_packet_dropped();
+         packet.incremental_state_cleared() || packet.previous_packet_dropped();
 }
 
 std::optional<int64_t> FilterByTimeRange::GetPacketTimestamp(
@@ -250,9 +250,8 @@ base::Status FilterByTimeRange::Transform(const Context& context,
 
 // CollectSliceBoundaries implementation
 
-base::Status CollectSliceBoundaries::Collect(
-    const TracePacket::Decoder& packet,
-    Context* context) const {
+base::Status CollectSliceBoundaries::Collect(const TracePacket::Decoder& packet,
+                                             Context* context) const {
   if (!packet.has_track_event() || !packet.has_timestamp()) {
     return base::OkStatus();
   }

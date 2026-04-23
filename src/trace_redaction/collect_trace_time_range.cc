@@ -80,8 +80,7 @@ base::Status BuildExtractionWindow::Build(Context* context) const {
   config.extraction_start_ns = config.trace_start_ns + config.offset_ns;
 
   if (config.duration_ns > 0) {
-    config.extraction_end_ns =
-        config.extraction_start_ns + config.duration_ns;
+    config.extraction_end_ns = config.extraction_start_ns + config.duration_ns;
   } else {
     // No duration specified, extract until end of trace
     config.extraction_end_ns = config.trace_end_ns;

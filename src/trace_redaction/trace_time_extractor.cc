@@ -40,8 +40,9 @@ class TolerantCollectClocks : public CollectClocks {
     auto status = CollectClocks::Collect(packet, context);
     if (!status.ok()) {
       // Log the error but continue - we'll use raw timestamps as fallback
-      PERFETTO_LOG("Clock collection warning (continuing with raw timestamps): %s",
-                   status.c_message());
+      PERFETTO_LOG(
+          "Clock collection warning (continuing with raw timestamps): %s",
+          status.c_message());
     }
     return base::OkStatus();
   }
@@ -55,7 +56,8 @@ TraceTimeExtractor::~TraceTimeExtractor() = default;
 
 std::unique_ptr<TraceTimeExtractor> TraceTimeExtractor::Create(
     const TimeExtractionConfig& config) {
-  auto extractor = std::unique_ptr<TraceTimeExtractor>(new TraceTimeExtractor());
+  auto extractor =
+      std::unique_ptr<TraceTimeExtractor>(new TraceTimeExtractor());
   extractor->config_ = config;
 
   // Create the underlying redactor with our custom primitives
