@@ -42,8 +42,7 @@ bool IsSequenceScopedClock(uint32_t clock_id) {
 
 // Check if a clock snapshot contains any sequence-scoped clocks that would
 // cause crashes in the clock synchronizer.
-bool HasProblematicClocks(
-    const protos::pbzero::TracePacket::Decoder& packet) {
+bool HasProblematicClocks(const protos::pbzero::TracePacket::Decoder& packet) {
   if (!packet.has_clock_snapshot()) {
     return false;
   }
@@ -72,8 +71,7 @@ class TolerantCollectClocks : public CollectClocks {
     // require sequence ID context that we don't have, and will crash the
     // clock synchronizer.
     if (HasProblematicClocks(packet)) {
-      PERFETTO_LOG(
-          "Skipping clock snapshot with sequence-scoped clocks");
+      PERFETTO_LOG("Skipping clock snapshot with sequence-scoped clocks");
       return base::OkStatus();
     }
 
