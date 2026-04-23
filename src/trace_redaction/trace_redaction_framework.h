@@ -30,6 +30,7 @@
 #include "src/trace_redaction/frame_cookie.h"
 #include "src/trace_redaction/process_thread_timeline.h"
 #include "src/trace_redaction/redactor_clock_converter.h"
+#include "src/trace_redaction/time_extraction_config.h"
 
 #include "protos/perfetto/trace/trace_packet.pbzero.h"
 
@@ -359,6 +360,10 @@ class Context {
   std::unique_ptr<SyntheticProcess> synthetic_process;
 
   RedactorClockConverter clock_converter;
+
+  // Configuration for time-based trace extraction.
+  // Only used when extracting a time segment from a trace.
+  TimeExtractionConfig time_extraction;
 };
 
 // Extracts low-level data from the trace and writes it into the context. The

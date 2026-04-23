@@ -25,6 +25,16 @@ executable("trace_redactor") {
   ]
 }
 
+# Trace time extractor - extracts a time segment from an existing trace
+executable("trace_time_extractor") {
+  sources = [ "trace_time_extractor_main.cc" ]
+  deps = [
+    ":trace_redaction",
+    "../../gn:default_deps",
+    "../base",
+  ]
+}
+
 source_set("trace_redaction") {
   sources = [
     "add_synth_threads_to_process_trees.cc",
@@ -39,8 +49,12 @@ source_set("trace_redaction") {
     "collect_system_info.h",
     "collect_timeline_events.cc",
     "collect_timeline_events.h",
+    "collect_trace_time_range.cc",
+    "collect_trace_time_range.h",
     "drop_empty_ftrace_events.cc",
     "drop_empty_ftrace_events.h",
+    "filter_by_time_range.cc",
+    "filter_by_time_range.h",
     "filtering.cc",
     "filtering.h",
     "find_package_uid.cc",
@@ -72,10 +86,13 @@ source_set("trace_redaction") {
     "reduce_threads_in_process_trees.h",
     "scrub_process_stats.cc",
     "scrub_process_stats.h",
+    "time_extraction_config.h",
     "trace_redaction_framework.cc",
     "trace_redaction_framework.h",
     "trace_redactor.cc",
     "trace_redactor.h",
+    "trace_time_extractor.cc",
+    "trace_time_extractor.h",
     "verify_integrity.cc",
     "verify_integrity.h",
   ]
